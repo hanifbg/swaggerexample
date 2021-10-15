@@ -123,7 +123,7 @@ paths:
           description: Add Cart Succeeded
 
   '/edit_product/{product_id}':
-    post:
+    put:
       security:
         - bearerAuth: []
       tags:
@@ -254,7 +254,7 @@ paths:
           description: Add Product Succeeded
   
   /edit_checkout/{id_checkout}:
-    post:
+    put:
       security:
         - bearerAuth: []
       tags:
