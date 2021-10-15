@@ -6,9 +6,29 @@ info:
   contact:
     email: hanifbg48@gmail.com
 servers:
-  - url: 'http://hanifbg.com'
+  - url: 'https://hanifbg.com'
 
 paths:
+  /register:
+    post:
+      tags:
+      - register
+      summary: Registration For User
+      requestBody:
+        description: Registration For User
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UserInfo'
+            example:
+              email: main@maiil.com
+              name: this is name
+              phone_number: 08123456789
+              address: Jl Maju Mundur Jakarta
+              password: password
+      responses:
+        '200':
+          description: Register Succeeded
   /login:
     post:
       tags:
@@ -32,6 +52,50 @@ paths:
               schema:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+  /add_category:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - add
+      summary: Add Category  
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CategoryInfo'
+            example:
+              category_name: buah segar
+      responses:
+        '200':
+          description: Add Product Succeeded
+  /add_product:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - add
+      summary: Add Product
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/ProductInfo'
+            example:
+              id_category: 1
+              product_name: pepaya
+              price: 10000
+              stock: 10
+              image: images/pepaya.png
+              detail: pepaya segar
+      responses:
+        '200':
+          description: Add Product Succeeded
+  
 
 components:
   requestBodies:
@@ -42,6 +106,29 @@ components:
             $ref: "#/components/schemas/LoginInfo" 
       description: User object that need to Login
       required: true
+    UserInfo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserInfo"
+    CategoryInfo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CategoryInfo"
+    ProductInfo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProductInfo"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:    
+    UnauthorizedError:
+      description: Access Token is Missing or Invalid
 
   schemas:
     LoginInfo:
@@ -53,4 +140,56 @@ components:
         email:
           type: string
         password:
+          type: string
+          minLength: 6
+    UserInfo:
+      type: object
+      required:
+        - email
+        - name
+        - phone_number
+        - password
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        phone_number:
+          type: string
+          minLength: 14
+          maxLength: 16
+        address:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+    CategoryInfo:
+      type: object
+      required:
+        - category_name
+      properties:
+        category_name:
+          type: string
+    ProductInfo:
+      type: object
+      required:
+        - id_category
+        - product_name
+        - price
+        - stock
+        - image
+        - detail
+      properties:
+        id_category:
+          type: integer
+        product_name:
+          type: string
+        price:
+          type: integer
+        stock:
+          type: integer
+        image:
+          type: string
+        detail:
           type: string
