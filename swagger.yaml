@@ -29,6 +29,7 @@ paths:
       responses:
         '200':
           description: Register Succeeded
+
   /login:
     post:
       tags:
@@ -52,6 +53,7 @@ paths:
               schema:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+  
   /add_category:
     post:
       security:
@@ -71,6 +73,7 @@ paths:
       responses:
         '200':
           description: Add Product Succeeded
+  
   /add_product:
     post:
       security:
@@ -95,6 +98,30 @@ paths:
       responses:
         '200':
           description: Add Product Succeeded
+
+  /add_cart:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - add
+      summary: Add Cart
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CartInfo'
+            example:
+              id_user: 1
+              id_product: 1
+              count: 3
+              price: 30000
+      responses:
+        '200':
+          description: Add Cart Succeeded
+
   '/edit_product/{product_id}':
     post:
       security:
@@ -120,6 +147,134 @@ paths:
         '200':
           description: Edit Product Succeeded
   
+  /get_category:
+    get:
+      tags:
+      - get
+      summary: Get All Category
+      requestBody:
+        description: Get All Category
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CategoryInfo'
+            example:
+              id_category: 1
+              category_name: this is category name
+      responses:
+        '200':
+          description: Get Success
+
+  /get_all_product/{id_category}:
+    get:
+      tags:
+      - get
+      summary: Get all Product by Category
+      requestBody:
+        description: Get Product by Category
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/ProductInfo'
+            example:
+              id_category: 1
+              product_name: this is product name
+              price: this is product price
+              stock: this is product stock
+              image: this is product image
+              detail: this is product detail
+      responses:
+        '200':
+          description: Get Success
+
+  /get_detail_product/{id_product}:
+    get:
+      tags:
+      - get
+      summary: Get Detail Product
+      requestBody:
+        description: Get Detail Product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/ProductInfo'
+            example:
+              id_category: 1
+              product_name: this is product name
+              price: this is product price
+              stock: this is product stock
+              image: this is product image
+              detail: this is product detail
+      responses:
+        '200':
+          description: Get Success
+
+  '/delete_cart/{id_cart}/{id_product}':
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+      - delete
+      summary: Delete cart by id cart and id product
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CartInfo'
+            example:
+              id_cart: 1
+              id_product: 1
+      responses:
+        '200':
+          description: Delete Cart Succeeded
+  
+  /create_checkout:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - add
+      summary: create checkout
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CheckoutInfo'
+            example:
+              id_cart: 1
+              id_user: 1
+              subtotal: 30000
+              payment: mandiri
+      responses:
+        '200':
+          description: Add Product Succeeded
+  
+  /edit_checkout/{id_checkout}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - add
+      summary: create checkout
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CheckoutInfo'
+            example:
+              is_active: 0
+              status_payment: 1
+              status_delivery: 1
+              status_overall: 1
+      responses:
+        '200':
+          description: Add Product Succeeded
 
 components:
   requestBodies:
@@ -145,6 +300,16 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ProductInfo"
+    CartInfo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CartInfo"    
+    CheckoutInfo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CheckoutInfo"  
   securitySchemes:
     bearerAuth:
       type: http
@@ -217,3 +382,43 @@ components:
           type: string
         detail:
           type: string
+    CartInfo:
+      type: object
+      required:
+        - id_product
+        - id_user
+        - count
+        - price
+      properties:
+        id_product:
+          type: integer
+        id_user:
+          type: integer
+        price:
+          type: integer
+        count:
+          type: integer
+    CheckoutInfo:
+      type: object
+      required:
+        - id_cart
+        - id_user
+        - count
+        - price
+      properties:
+        id_cart:
+          type: integer
+        id_user:
+          type: integer
+        subtotal:
+          type: integer
+        payment:
+          type: string
+        is_active:
+          type: boolean
+        status_payment:
+          type: boolean
+        status_delivery:
+          type: boolean
+        status_overall:
+          type: boolean
