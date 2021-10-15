@@ -95,6 +95,30 @@ paths:
       responses:
         '200':
           description: Add Product Succeeded
+  '/edit_product/{product_id}':
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+      - edit
+      summary: Edit Product by Product Id
+      requestBody:
+        description: Optional description in *markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/ProductInfo'
+            example:
+              id_category: 1
+              product_name: pepaya
+              price: 10000
+              stock: 10
+              image: images/pepaya.png
+              detail: pepaya segar
+      responses:
+        '200':
+          description: Edit Product Succeeded
   
 
 components:
